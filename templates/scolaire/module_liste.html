@@ -1,0 +1,47 @@
+{% extends 'base/base.html' %}
+{% block title %}Modules{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-book"></i> Liste des Modules</h2>
+    <a href="/modules/ajouter/" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Ajouter
+    </a>
+</div>
+
+<div class="card p-3">
+    <table class="table table-hover align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>Nom</th>
+                <th>Enseignant</th>
+                <th>Heures</th>
+                <th>Filière</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in modules %}
+            <tr>
+                <td>{{ m.nom }}</td>
+                <td>{{ m.enseignant }}</td>
+                <td>{{ m.nbr_heures }}h</td>
+                <td>{{ m.filiere }}</td>
+                <td>
+                    <a href="/modules/{{ m.id }}/modifier/" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="/modules/{{ m.id }}/supprimer/" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">Aucun module enregistré.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

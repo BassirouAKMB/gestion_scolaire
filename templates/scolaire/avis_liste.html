@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% block title %}Avis{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-chat-left-text"></i> Liste des Avis</h2>
+    <a href="/avis/ajouter/" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Ajouter
+    </a>
+</div>
+
+<div class="card p-3">
+    <table class="table table-hover align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>Étudiant</th>
+                <th>Module</th>
+                <th>Message</th>
+                <th>Note</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in avis %}
+            <tr>
+                <td>{{ a.etudiant }}</td>
+                <td>{{ a.module }}</td>
+                <td>{{ a.message|truncatechars:50 }}</td>
+                <td>
+                    <span class="badge bg-primary">{{ a.note }}/20</span>
+                </td>
+                <td>{{ a.date_avis|date:"d/m/Y" }}</td>
+                <td>
+                    <a href="/avis/{{ a.id }}/supprimer/" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">Aucun avis enregistré.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
