@@ -23,41 +23,38 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/"><i class="bi bi-house"></i> Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/etudiants/"><i class="bi bi-people"></i> Étudiants</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/modules/"><i class="bi bi-book"></i> Modules</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/classes/"><i class="bi bi-diagram-3"></i> Classes</a>
-                </li>
-
-                <!-- ↓ AJOUTE CES LIGNES ICI, juste avant </ul> -->
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <span class="nav-link text-white">
-                        <i class="bi bi-person-fill"></i> {{ user.username }}
-                    </span>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-warning" href="/accounts/logout/">
-                        <i class="bi bi-box-arrow-right"></i> Déconnexion
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/avis/">
-                        <i class="bi bi-chat-left-text"></i> Avis
-                    </a>
-                </li>
-                {% endif %}
-                <!-- ↑ FIN DE L'AJOUT -->
-
-            </ul>  <!-- ← </ul> reste ici, après le bloc -->
+          <ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="/"><i class="bi bi-house"></i> Accueil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/etudiants/"><i class="bi bi-people"></i> Étudiants</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/modules/"><i class="bi bi-book"></i> Modules</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/classes/"><i class="bi bi-diagram-3"></i> Classes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/filieres/"><i class="bi bi-collection"></i> Filières</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/avis/"><i class="bi bi-chat-left-text"></i> Avis</a>
+    </li>
+    {% if user.is_authenticated %}
+    <li class="nav-item">
+        <span class="nav-link text-white">
+            <i class="bi bi-person-fill"></i> {{ user.username }}
+        </span>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-warning" href="/accounts/logout/">
+            <i class="bi bi-box-arrow-right"></i> Déconnexion
+        </a>
+    </li>
+    {% endif %}
+</ul> 
         </div>
     </div>
 </nav>

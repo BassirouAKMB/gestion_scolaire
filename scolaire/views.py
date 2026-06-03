@@ -16,6 +16,9 @@ from .forms import EtudiantForm, ModuleForm, FiliereForm, ClasseForm
 from .models import Etudiant, Classe, Module, Filiere, Avis
 from .forms import EtudiantForm, ModuleForm, FiliereForm, ClasseForm, AvisForm
 
+from django.shortcuts import get_object_or_404
+
+
 @login_required(login_url='/accounts/login/') 
 def etudiant_ajouter(request):
     form = EtudiantForm()
@@ -39,10 +42,22 @@ def index(request):
     }
     return render(request, 'scolaire/index.html', context)
 
-@login_required(login_url='/accounts/login/') 
+@login_required(login_url='/accounts/login/')
 def etudiant_liste(request):
+    search = request.GET.get('q', '')
     etudiants = Etudiant.objects.all()
-    return render(request, 'scolaire/etudiant_liste.html', {'etudiants': etudiants})
+    if search:
+        etudiants = etudiants.filter(
+            nom__icontains=search
+        ) | etudiants.filter(
+            prenom__icontains=search
+        ) | etudiants.filter(
+            classe__icontains=search
+        )
+    return render(request, 'scolaire/etudiant_liste.html', {
+        'etudiants': etudiants,
+        'search': search
+    })
 
 @login_required(login_url='/accounts/login/') 
 def etudiant_modifier(request, pk):
@@ -67,8 +82,20 @@ def etudiant_supprimer(request, pk):
 
 @login_required(login_url='/accounts/login/')
 def module_liste(request):
+    search = request.GET.get('q', '')
     modules = Module.objects.all()
-    return render(request, 'scolaire/module_liste.html', {'modules': modules})
+    if search:
+        modules = modules.filter(
+            nom__icontains=search
+        ) | modules.filter(
+            enseignant__icontains=search
+        ) | modules.filter(
+            filiere__icontains=search
+        )
+    return render(request, 'scolaire/module_liste.html', {
+        'modules': modules,
+        'search': search
+    })
 
 
 @login_required(login_url='/accounts/login/')
@@ -109,8 +136,18 @@ def module_supprimer(request, pk):
 # ─── FILIÈRES ───
 @login_required(login_url='/accounts/login/')
 def filiere_liste(request):
+    search = request.GET.get('q', '')
     filieres = Filiere.objects.all()
-    return render(request, 'scolaire/filiere_liste.html', {'filieres': filieres})
+    if search:
+        filieres = filieres.filter(
+            nom__icontains=search
+        ) | filieres.filter(
+            description__icontains=search
+        )
+    return render(request, 'scolaire/filiere_liste.html', {
+        'filieres': filieres,
+        'search': search
+    })
 
 
 @login_required(login_url='/accounts/login/')
@@ -151,8 +188,20 @@ def filiere_supprimer(request, pk):
 # ─── CLASSES ───
 @login_required(login_url='/accounts/login/')
 def classe_liste(request):
+    search = request.GET.get('q', '')
     classes = Classe.objects.all()
-    return render(request, 'scolaire/classe_liste.html', {'classes': classes})
+    if search:
+        classes = classes.filter(
+            nom__icontains=search
+        ) | classes.filter(
+            filiere__icontains=search
+        ) | classes.filter(
+            niveau__icontains=search
+        )
+    return render(request, 'scolaire/classe_liste.html', {
+        'classes': classes,
+        'search': search
+    })
 
 
 @login_required(login_url='/accounts/login/')
@@ -217,3 +266,12 @@ def avis_supprimer(request, pk):
         messages.success(request, 'Avis supprimé avec succès !')
         return redirect('avis_liste')
     return render(request, 'scolaire/avis_confirm_supprimer.html', {'avis': avis})
+
+@login_required(login_url='/accounts/login/')
+def etudiant_detail(request, pk):
+    etudiant = get_object_or_404(Etudiant, id=pk)
+    avis = Avis.objects.filter(etudiant=etudiant)
+    return render(request, 'scolaire/etudiant_detail.html', {
+        'etudiant': etudiant,
+        'avis': avis
+    })
