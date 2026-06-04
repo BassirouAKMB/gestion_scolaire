@@ -1,6 +1,6 @@
 from django import forms
 from .models import Etudiant
-
+from .models import Etudiant, Module, Filiere, Classe, Niveau, Avis, Note
 
 class EtudiantForm(forms.ModelForm):
     class Meta:
@@ -66,4 +66,15 @@ class AvisForm(forms.ModelForm):
             'module': forms.Select(attrs={'class': 'form-select'}),
             'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'note': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 20}),
+        }
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ['etudiant', 'module', 'note', 'semestre']
+        widgets = {
+            'etudiant': forms.Select(attrs={'class': 'form-select'}),
+            'module': forms.Select(attrs={'class': 'form-select'}),
+            'note': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 20, 'step': '0.25'}),
+            'semestre': forms.Select(attrs={'class': 'form-select'}),
         }

@@ -83,3 +83,22 @@ class Avis(models.Model):
     class Meta:
         verbose_name = "Avis"
         verbose_name_plural = "Avis"
+
+class Note(models.Model):
+    SEMESTRE_CHOICES = [
+        ('S1', 'Semestre 1'),
+        ('S2', 'Semestre 2'),
+    ]
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, related_name='notes')
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='notes')
+    note = models.DecimalField(max_digits=4, decimal_places=2)
+    semestre = models.CharField(max_length=2, choices=SEMESTRE_CHOICES, default='S1')
+    date_ajout = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.etudiant} — {self.module} : {self.note}/20"
+
+    class Meta:
+        verbose_name = "Note"
+        verbose_name_plural = "Notes"
+        unique_together = ['etudiant', 'module', 'semestre']

@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %}
+{% block title %}Notes{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-journal-check"></i> Notes des Étudiants</h2>
+    {% if user.is_superuser or user.groups.all.0.name == 'Professeur' %}
+    <a href="/notes/ajouter/" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Ajouter une note
+    </a>
+    {% endif %}
+</div>
+
+{% if moyenne %}
+<div class="alert alert-info">
+    <i class="bi bi-calculator"></i>
+    Moyenne générale : <strong>{{ moyenne|floatformat:2 }}/20</strong>
+</div>
+{% endif %}
+
+<div class="card p-3">
+    <table class="table table-hover align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>Étudiant</th>
+                <th>Module</th>
+                <th>Semestre</th>
+                <th>Note</th>
+                <th>Mention</th>
+                {% if user.is_superuser or user.groups.all.0.name == 'Professeur' %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for n in notes %}
+            <tr>
+                <td>{{ n.etudiant }}</td>
+                <td>{{ n.module }}</td>
+                <td>{{ n.semestre }}</td>
+                <td>
+                    <span class="badge 
+                        {% if n.note >= 16 %}bg-success
+                        {% elif n.note >= 14 %}bg-primary
+                        {% elif n.note >= 12 %}bg-info
+                        {% elif n.note >= 10 %}bg-warning text-dark
+                        {% else %}bg-danger{% endif %}">
+                        {{ n.note }}/20
+                    </span>
+                </td>
+                <td>
+                    {% if n.note >= 16 %}Très Bien
+                    {% elif n.note >= 14 %}Bien
+                    {% elif n.note >= 12 %}Assez Bien
+                    {% elif n.note >= 10 %}Passable
+                    {% else %}<span class="text-danger">Insuffisant</span>
+                    {% endif %}
+                </td>
+                {% if user.is_superuser or user.groups.all.0.name == 'Professeur' %}
+                <td>
+                    <a href="/notes/{{ n.id }}/modifier/" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="/notes/{{ n.id }}/supprimer/" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">Aucune note enregistrée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,22 +1,9 @@
-from django.shortcuts import render
-from .models import Etudiant, Classe, Module, Filiere
-
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.shortcuts import redirect
-from .forms import EtudiantForm
-
 from django.contrib.auth.decorators import login_required
-
-from .models import Etudiant, Classe, Module, Filiere, Niveau
-from .forms import EtudiantForm, ModuleForm
-
-from .models import Etudiant, Classe, Module, Filiere
-from .forms import EtudiantForm, ModuleForm, FiliereForm, ClasseForm
-
-from .models import Etudiant, Classe, Module, Filiere, Avis
-from .forms import EtudiantForm, ModuleForm, FiliereForm, ClasseForm, AvisForm
-
-from django.shortcuts import get_object_or_404
+from django.db.models import Avg
+from .models import Etudiant, Classe, Module, Filiere, Avis, Note
+from .forms import EtudiantForm, ModuleForm, FiliereForm, ClasseForm, AvisForm, NoteForm
 
 
 @login_required(login_url='/accounts/login/') 
@@ -275,3 +262,71 @@ def etudiant_detail(request, pk):
         'etudiant': etudiant,
         'avis': avis
     })
+
+
+# ─── NOTES ───
+@login_required(login_url='/accounts/login/')
+def note_liste(request):
+    # Etudiant voit seulement ses propres notes
+    if request.user.groups.filter(name='Etudiant').exists():
+        # On cherche l'étudiant lié à cet utilisateur par son nom
+        notes = Note.objects.filter(
+            etudiant__nom__icontains=request.user.username
+        ) | Note.objects.filter(
+            etudiant__prenom__icontains=request.user.username
+        )
+    else:
+        notes = Note.objects.all().order_by('etudiant', 'semestre')
+
+    # Calcul moyenne par étudiant
+    from django.db.models import Avg
+    moyenne = notes.aggregate(Avg('note'))['note__avg']
+
+    return render(request, 'scolaire/note_liste.html', {
+        'notes': notes,
+        'moyenne': moyenne
+    })
+
+
+@login_required(login_url='/accounts/login/')
+def note_ajouter(request):
+    if not (request.user.is_superuser or request.user.groups.filter(name='Professeur').exists()):
+        messages.error(request, 'Accès refusé.')
+        return redirect('note_liste')
+    form = NoteForm()
+    if request.method == 'POST':
+        form = NoteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Note ajoutée avec succès !')
+            return redirect('note_liste')
+    return render(request, 'scolaire/note_form.html', {'form': form, 'titre': 'Ajouter une note'})
+
+
+@login_required(login_url='/accounts/login/')
+def note_modifier(request, pk):
+    if not (request.user.is_superuser or request.user.groups.filter(name='Professeur').exists()):
+        messages.error(request, 'Accès refusé.')
+        return redirect('note_liste')
+    note = get_object_or_404(Note, id=pk)
+    form = NoteForm(instance=note)
+    if request.method == 'POST':
+        form = NoteForm(request.POST, instance=note)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Note modifiée avec succès !')
+            return redirect('note_liste')
+    return render(request, 'scolaire/note_form.html', {'form': form, 'titre': 'Modifier une note'})
+
+
+@login_required(login_url='/accounts/login/')
+def note_supprimer(request, pk):
+    if not (request.user.is_superuser or request.user.groups.filter(name='Professeur').exists()):
+        messages.error(request, 'Accès refusé.')
+        return redirect('note_liste')
+    note = get_object_or_404(Note, id=pk)
+    if request.method == 'POST':
+        note.delete()
+        messages.success(request, 'Note supprimée avec succès !')
+        return redirect('note_liste')
+    return render(request, 'scolaire/note_confirm_supprimer.html', {'note': note})

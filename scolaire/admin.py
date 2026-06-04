@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Filiere, Niveau, Classe, Etudiant, Module, Avis
-
+from .models import Filiere, Niveau, Classe, Etudiant, Module, Avis, Note
 
 @admin.register(Filiere)
 class FiliereAdmin(admin.ModelAdmin):
@@ -39,4 +39,10 @@ class ModuleAdmin(admin.ModelAdmin):
 class AvisAdmin(admin.ModelAdmin):
     list_display = ['etudiant', 'module', 'note', 'date_avis']
     list_filter = ['module', 'note']
+    search_fields = ['etudiant__nom', 'module__nom']
+
+@admin.register(Note)
+class NoteAdmin(admin.ModelAdmin):
+    list_display = ['etudiant', 'module', 'note', 'semestre', 'date_ajout']
+    list_filter = ['semestre', 'module']
     search_fields = ['etudiant__nom', 'module__nom']

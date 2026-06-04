@@ -38,4 +38,12 @@ urlpatterns = [
     path('avis/<int:pk>/supprimer/', views.avis_supprimer, name='avis_supprimer'),
     # API
     path('api/', include(router.urls)),
+    
+    path('etudiants/<int:pk>/', views.etudiant_detail, name='etudiant_detail'),
+
+    # Notes
+    path('notes/', views.note_liste, name='note_liste'),
+    path('notes/ajouter/', views.note_ajouter, name='note_ajouter'),
+    path('notes/<int:pk>/modifier/', views.note_modifier, name='note_modifier'),
+    path('notes/<int:pk>/supprimer/', views.note_supprimer, name='note_supprimer'),
 ]

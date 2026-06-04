@@ -7,12 +7,29 @@
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple?logo=bootstrap)
 ![DRF](https://img.shields.io/badge/DRF-REST%20API-red)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 
 ---
 
 ## 📌 Présentation
 
-**Gestion Scolaire** est une application web développée dans le cadre d'un projet académique en **2ème année d'Informatique Appliquée à la Gestion des Entreprises (IAGE)**. Elle permet de gérer les étudiants, les modules, les classes, les filières et les avis de façon centralisée et sécurisée.
+**Gestion Scolaire** est une application web développée dans le cadre d'un projet académique en **2ème année d'Informatique Appliquée à la Gestion des Entreprises (IAGE)**. Elle permet de gérer les étudiants, les modules, les classes, les filières, les notes et les avis de façon centralisée et sécurisée, avec un système de rôles complet.
+
+---
+
+## 📸 Captures d'écran
+
+| Page | Description |
+|---|---|
+| ![Connexion](screenshots/login.png) | Page de connexion sécurisée |
+| ![Inscription](screenshots/register.png) | Page d'inscription avec choix de rôle |
+| ![Dashboard](screenshots/dashboard.png) | Tableau de bord avec statistiques |
+| ![Étudiants](screenshots/etudiants.png) | Liste des étudiants avec recherche |
+| ![Modules](screenshots/modules.png) | Liste des modules avec recherche |
+| ![Classes](screenshots/classes.png) | Liste des classes avec recherche |
+| ![Filières](screenshots/filieres.png) | Liste des filières avec recherche |
+| ![Avis](screenshots/avis.png) | Liste des avis avec notes |
+| ![Notes](screenshots/notes.png) | Gestion des notes avec mentions |
 
 ---
 
@@ -21,20 +38,33 @@
 ### 👤 Gestion des utilisateurs
 - Inscription avec choix de rôle (Étudiant / Professeur)
 - Connexion et déconnexion sécurisées
-- Gestion des rôles et permissions
+- Gestion des rôles et permissions par groupes Django
 
 ### 🎓 Gestion scolaire
-- **Étudiants** — CRUD complet avec photo de profil
+- **Étudiants** — CRUD complet avec photo de profil et page détail
 - **Modules** — Gestion des cours et enseignants
 - **Classes** — Organisation par niveau et filière
 - **Filières** — Gestion des départements
+- **Notes** — Saisie et consultation des notes avec calcul de moyenne et mentions
 - **Avis** — Notation des modules par les étudiants
+
+### 📊 Notes et moyennes
+- Saisie des notes par semestre (S1 / S2)
+- Calcul automatique de la moyenne générale
+- Système de mentions :
+  - 🟢 **Très Bien** — 16 à 20
+  - 🔵 **Bien** — 14 à 16
+  - 🔵 **Assez Bien** — 12 à 14
+  - 🟡 **Passable** — 10 à 12
+  - 🔴 **Insuffisant** — moins de 10
 
 ### 🔐 Sécurité et rôles
 | Fonctionnalité | Étudiant | Professeur | Admin |
 |---|---|---|---|
 | Consulter les données | ✅ | ✅ | ✅ |
+| Consulter ses propres notes | ✅ | ✅ | ✅ |
 | Ajouter / Modifier | ❌ | ✅ | ✅ |
+| Saisir les notes | ❌ | ✅ | ✅ |
 | Supprimer | ❌ | ✅ | ✅ |
 | Donner un avis | ✅ | ✅ | ✅ |
 | Accès Admin Django | ❌ | ❌ | ✅ |
@@ -98,10 +128,23 @@ gestion_scolaire/
 │       ├── module_liste.html
 │       ├── classe_liste.html
 │       ├── filiere_liste.html
-│       └── avis_liste.html
+│       ├── avis_liste.html
+│       ├── note_liste.html
+│       ├── note_form.html
+│       └── note_confirm_supprimer.html
 ├── static/                    # Fichiers CSS/JS
 │   └── css/
 │       └── style.css
+├── screenshots/               # Captures d'écran de l'application
+│   ├── login.png
+│   ├── register.png
+│   ├── dashboard.png
+│   ├── etudiants.png
+│   ├── modules.png
+│   ├── classes.png
+│   ├── filieres.png
+│   ├── avis.png
+│   └── notes.png
 ├── media/                     # Photos uploadées
 ├── requirements.txt           # Dépendances Python
 ├── Procfile                   # Configuration Railway
@@ -181,6 +224,7 @@ Accède à l'application sur **http://127.0.0.1:8000** 🚀
 | `/classes/` | Liste des classes |
 | `/filieres/` | Liste des filières |
 | `/avis/` | Liste des avis |
+| `/notes/` | Liste des notes |
 | `/accounts/login/` | Connexion |
 | `/accounts/register/` | Inscription |
 | `/accounts/logout/` | Déconnexion |
@@ -215,6 +259,7 @@ Base URL : `/api/`
 - Variables sensibles via variables d'environnement (`os.environ`)
 - Authentification requise sur toutes les pages (`@login_required`)
 - Gestion des rôles par groupes Django
+- Restriction d'accès aux notes selon le rôle
 
 ---
 
